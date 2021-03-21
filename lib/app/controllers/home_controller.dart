@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 class HomeController {
   List<CurrencyModel> currencies;
 
-  TextEditingController toText = TextEditingController();
-  TextEditingController fromText = TextEditingController();
+  final TextEditingController toText;
+  final TextEditingController fromText;
 
   CurrencyModel toCurrency;
   CurrencyModel fromCurrency;
 
-  HomeController() {
+  HomeController({this.toText, this.fromText}) {
     currencies = CurrencyModel.getCurrencies();
     toCurrency = currencies[0];
     fromCurrency = currencies[1];
@@ -18,7 +18,7 @@ class HomeController {
 
   void convert() {
     String text = toText.text;
-    double value = double.tryParse(text) ?? 1.0;
+    double value = double.tryParse(text.replaceAll(',', '.')) ?? 1.0;
     double returnValue = 0;
 
     if (fromCurrency.name == 'Real') {

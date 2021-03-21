@@ -1,6 +1,25 @@
+import 'package:contador/app/components/currency_box.dart';
+import 'package:contador/app/controllers/home_controller.dart';
 import 'package:flutter/material.dart';
 
-class HomeView extends StatelessWidget {
+class HomeView extends StatefulWidget {
+  @override
+  _HomeViewState createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> {
+  final TextEditingController toText = TextEditingController();
+
+  final TextEditingController fromText = TextEditingController();
+
+  HomeController homeController;
+
+  @override
+  void initState() {
+    super.initState();
+    homeController = HomeController(toText: toText, fromText: fromText);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,43 +38,28 @@ class HomeView extends StatelessWidget {
             SizedBox(
               height: 50,
             ),
+            CurrencyBox(
+              selectedItem: homeController.toCurrency,
+              controller: homeController.toText,
+              items: homeController.currencies,
+              onChanged: (model) {
+                setState(() {
+                  homeController.toCurrency = model;
+                });
+              },
+            ),
             SizedBox(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                      flex: 1,
-                      child: SizedBox(
-                        height: 56.7,
-                        child: DropdownButton(
-                            iconEnabledColor: Colors.blue[300],
-                            items: [
-                              DropdownMenuItem(child: Text('Real')),
-                              DropdownMenuItem(child: Text('Dolar')),
-                              DropdownMenuItem(child: Text('Euro'))
-                            ],
-                            underline: Container(
-                              height: 1,
-                              color: Colors.blue[300],
-                            ),
-                            isExpanded: true,
-                            onChanged: (value) {}),
-                      )),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: TextField(
-                      decoration: InputDecoration(
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.blue[300]),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              height: 20,
+            ),
+            CurrencyBox(
+              selectedItem: homeController.fromCurrency,
+              controller: homeController.fromText,
+              items: homeController.currencies,
+              onChanged: (model) {
+                setState(() {
+                  homeController.fromCurrency = model;
+                });
+              },
             ),
             SizedBox(
               height: 50,
@@ -68,7 +72,9 @@ class HomeView extends StatelessWidget {
                     Colors.blue[300],
                   ),
                 ),
-                onPressed: () => {print('opa')},
+                onPressed: () {
+                  homeController.convert();
+                },
                 child: Text('CONVERT'),
               ),
             ),
